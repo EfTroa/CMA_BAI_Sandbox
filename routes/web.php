@@ -5,6 +5,8 @@ use App\Http\Controllers\IdeaController;
 use App\Http\Controllers\CommentController;
 use App\Http\Controllers\LogController;
 use App\Http\Controllers\RedirectController;
+use App\Http\Controllers\CookieConsentController;
+use App\Http\Controllers\ProfileController;
 
 /*
 |--------------------------------------------------------------------------
@@ -45,6 +47,20 @@ Route::middleware(['auth'])->group(function () {
     // Logs page — currently no admin restriction (intentional)
     Route::get('/logs', [LogController::class, 'index'])
         ->name('logs.index');
+
+    // Gestion du consentement cookies
+    Route::post('/cookies/accept', [CookieConsentController::class, 'accept'])
+        ->name('cookies.accept');
+
+    Route::post('/cookies/deny', [CookieConsentController::class, 'deny'])
+        ->name('cookies.deny'); 
+
+    Route::get('/profile/cookies', [ProfileController::class, 'cookies'])->name('profile.cookies');
+
+    // Page Charte RGPD
+    Route::get('/rgpd/charte', function () {
+        return view('rgpd.charte');
+    })->name('rgpd.charte');
 });
 
 // ------------- Intentional Open Redirect Vulnerability -------------

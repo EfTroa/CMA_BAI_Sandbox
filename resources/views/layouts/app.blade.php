@@ -25,11 +25,12 @@
             <a href="{{ route('redirect.vulnerable', ['url' => 'https://google.com']) }}">
                 Open Redirect Test
             </a>
+            <a href="{{ route('rgpd.charte') }}">Charte RGPD</a>
         </div>
 
         <div class="flex space-x-4">
             @auth
-                <span>{{ auth()->user()->name }}</span>
+                <a href="{{ route('profile.cookies') }}">Profil</a>
                 <form method="POST" action="{{ route('logout') }}">
                     @csrf
                     <button class="text-red-600">Logout</button>
@@ -47,6 +48,9 @@
 <main class="max-w-7xl mx-auto px-4">
     @yield('content')
 </main>
+
+{{-- Cookie consent banner --}}
+<x-cookie-banner />
 
 </body>
 </html>

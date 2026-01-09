@@ -57,4 +57,13 @@ class ProfileController extends Controller
 
         return Redirect::to('/');
     }
+
+    /**
+    * Display cookie preferences page.
+    */
+    public function cookies(Request $request): View {
+        return view('profile.cookies', [
+            'user' => $request->user(),
+        ]);
+    }
 }
