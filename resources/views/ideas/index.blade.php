@@ -20,6 +20,12 @@
             </div>
         @endif
 
+        @if(session('success'))
+            <div class="p-2 bg-green-100 border rounded">
+                {{ session('success') }}
+            </div>
+        @endif
+
         {{-- List of ideas --}}
         @forelse($ideas as $idea)
             <div class="p-4 bg-white border rounded">
