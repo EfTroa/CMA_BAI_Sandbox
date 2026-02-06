@@ -21,9 +21,15 @@ class User extends Authenticatable
         'name',
         'email',
         'password',
+        'role',
         'cookies_consent',
         'cookies_consent_at'
     ];
+
+    public function isAdmin(): bool
+    {
+        return $this->role === 2;
+    }
 
     /**
      * The attributes that should be hidden for serialization.

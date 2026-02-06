@@ -44,9 +44,10 @@ Route::middleware(['auth'])->group(function () {
     Route::delete('/ideas/{idea}/comments/{comment}', [CommentController::class, 'destroy'])
         ->name('comments.destroy');
 
-    // Logs page — currently no admin restriction (intentional)
+    // Logs page — restricted to admin
     Route::get('/logs', [LogController::class, 'index'])
-        ->name('logs.index');
+        ->name('logs.index')
+        ->middleware('admin');
 
     // Gestion du consentement cookies
     Route::post('/cookies/accept', [CookieConsentController::class, 'accept'])

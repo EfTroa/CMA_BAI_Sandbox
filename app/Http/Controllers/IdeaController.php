@@ -80,6 +80,7 @@ class IdeaController extends Controller
      */
     public function edit(Idea $idea)
     {
+        $this->authorize('update', $idea);
         return view('ideas.edit', compact('idea'));
     }
 
@@ -88,6 +89,7 @@ class IdeaController extends Controller
      */
     public function update(Request $request, Idea $idea)
     {
+        $this->authorize('update', $idea);
         $idea->update([
             'title'       => $request->input('title'),
             'description' => $request->input('description'),
@@ -107,6 +109,7 @@ class IdeaController extends Controller
      */
     public function destroy(Idea $idea)
     {
+        $this->authorize('delete', $idea);
         $idea->delete();
 
         return redirect()

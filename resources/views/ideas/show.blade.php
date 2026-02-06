@@ -33,15 +33,19 @@
 
             {{-- Edit / Delete --}}
             <div class="mt-4 flex space-x-3">
-                <a href="{{ route('ideas.edit', $idea) }}"
-                   class="text-blue-600">Edit</a>
+                @can('update', $idea)
+                    <a href="{{ route('ideas.edit', $idea) }}"
+                       class="text-blue-600">Edit</a>
+                @endcan
 
-                <form action="{{ route('ideas.destroy', $idea) }}"
-                      method="POST">
-                    @csrf
-                    @method('DELETE')
-                    <button class="text-red-600">Delete</button>
-                </form>
+                @can('delete', $idea)
+                    <form action="{{ route('ideas.destroy', $idea) }}"
+                          method="POST">
+                        @csrf
+                        @method('DELETE')
+                        <button class="text-red-600">Delete</button>
+                    </form>
+                @endcan
             </div>
 
         </div>
@@ -81,14 +85,16 @@
                         {!! nl2br($comment->description) !!}
                     </div>
 
-                    <form action="{{ route('comments.destroy', [$idea, $comment]) }}"
-                          method="POST">
-                        @csrf
-                        @method('DELETE')
-                        <button class="text-xs text-red-600 mt-1">
-                            Delete
-                        </button>
-                    </form>
+                    @can('delete', $comment)
+                        <form action="{{ route('comments.destroy', [$idea, $comment]) }}"
+                              method="POST">
+                            @csrf
+                            @method('DELETE')
+                            <button class="text-xs text-red-600 mt-1">
+                                Delete
+                            </button>
+                        </form>
+                    @endcan
 
                 </div>
 
