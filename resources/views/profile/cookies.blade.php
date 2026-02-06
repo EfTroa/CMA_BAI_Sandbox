@@ -20,7 +20,7 @@
         <div class="flex gap-4">
             <form method="POST" action="{{ route('cookies.accept') }}">
                 @csrf
-                <button type="submit" class="px-6 py-2 !bg-green-600 hover:!bg-green-700 text-white rounded">
+                <button type="submit" class="px-6 py-2 bg-green-600 hover:bg-green-700 text-white rounded">
                     Accepter les cookies
                 </button>
             </form>
