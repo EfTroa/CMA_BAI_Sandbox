@@ -2,28 +2,16 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\ActionLog;
+use Illuminate\Support\Facades\File;
 
-/**
- * Minimal admin log view.
- *
- * SECURITY NOTE:
- * - No role verification login ANY authenticated user can access logs (TODO)
- *   Secure it by adding a real admin policy.
- */
 class LogController extends Controller
 {
-    public function __construct()
-    {
-    }
-
     public function index()
     {
-        $logs = ActionLog::with('user')
-            ->latest()
-            ->limit(200)
-            ->get();
+        $logFile = storage_path('logs/laravel.log');
 
-        return view('logs.index', compact('logs'));
+        $content = File::exists($logFile) ? File::get($logFile) : 'Aucun log disponible.';
+
+        return view('logs.index', compact('content'));
     }
 }
