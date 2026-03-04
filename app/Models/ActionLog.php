@@ -26,6 +26,12 @@ class ActionLog extends Model
         'data_after',
         'ip_address',
         'user_agent',
+        'session_id',
+        'severity',
+        'result',
+        'category',
+        'http_status',
+        'checksum',
     ];
 
     public function user()

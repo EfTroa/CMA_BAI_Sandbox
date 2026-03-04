@@ -17,6 +17,9 @@ return Application::configure(basePath: dirname(__DIR__))
         $middleware->alias([
             'admin' => \App\Http\Middleware\AdminMiddleware::class,
         ]);
+
+        // Enregistre ActionLogMiddleware sur toutes les routes web
+        $middleware->appendToGroup('web', \App\Http\Middleware\ActionLogMiddleware::class);
     })
     ->withExceptions(function (Exceptions $exceptions): void {
         //

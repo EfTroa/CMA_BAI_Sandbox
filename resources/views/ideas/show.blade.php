@@ -28,7 +28,7 @@
             {{-- SECURITY WARNING:
                  XSS vulnerability — output not escaped --}}
             <div class="mt-4 text-sm">
-                {!! nl2br($idea->description) !!}
+                {!! nl2br(e($idea->description)) !!}
             </div>
 
             {{-- Edit / Delete --}}
@@ -82,18 +82,45 @@
 
                     {{-- SECURITY WARNING: XSS vulnerable --}}
                     <div class="mt-1 text-sm">
-                        {!! nl2br($comment->description) !!}
+                        {!! nl2br(e($comment->description)) !!}
                     </div>
 
-                    @can('delete', $comment)
-                        <form action="{{ route('comments.destroy', [$idea, $comment]) }}"
-                              method="POST">
-                            @csrf
-                            @method('DELETE')
-                            <button class="text-xs text-red-600 mt-1">
-                                Delete
+                    <div class="flex space-x-3 mt-1">
+
+                        @can('update', $comment)
+                            <button onclick="document.getElementById('edit-comment-{{ $comment->id }}').classList.toggle('hidden')"
+                                    class="text-xs text-blue-600">
+                                Edit
                             </button>
-                        </form>
+                        @endcan
+
+                        @can('delete', $comment)
+                            <form action="{{ route('comments.destroy', [$idea, $comment]) }}"
+                                  method="POST">
+                                @csrf
+                                @method('DELETE')
+                                <button class="text-xs text-red-600">
+                                    Delete
+                                </button>
+                            </form>
+                        @endcan
+
+                    </div>
+
+                    @can('update', $comment)
+                        <div id="edit-comment-{{ $comment->id }}" class="hidden mt-2">
+                            <form action="{{ route('comments.update', [$idea, $comment]) }}"
+                                  method="POST">
+                                @csrf
+                                @method('PUT')
+                                <textarea name="description"
+                                          rows="2"
+                                          class="w-full border rounded p-2 text-sm">{{ e($comment->description) }}</textarea>
+                                <button class="mt-1 px-3 py-1 bg-blue-600 text-white text-sm rounded">
+                                    Save
+                                </button>
+                            </form>
+                        </div>
                     @endcan
 
                 </div>

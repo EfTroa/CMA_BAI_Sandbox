@@ -25,8 +25,9 @@ class ActionLogMiddleware
     {
         $response = $next($request);
 
-        $user = $request->user();
+        $user   = $request->user();
         $userId = $user ? $user->id : null;
+        $status = $response->getStatusCode();
 
         $action = sprintf(
             'HTTP %s %s',
@@ -34,12 +35,20 @@ class ActionLogMiddleware
             $request->path()
         );
 
+        // Déduit le résultat à partir du code HTTP retourné
+        $result = match (true) {
+            $status >= 500 => 'error',
+            $status >= 400 => 'failure',
+            default        => 'success',
+        };
+
         $this->logger->log(
             userId: $userId,
             action: $action,
-            request: $request
+            request: $request,
+            result: $result,
+            httpStatus: $status,
         );
-        $request->session()->forget('_token');
 
         return $response;
     }

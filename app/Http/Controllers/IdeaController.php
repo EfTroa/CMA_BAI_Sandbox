@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Idea;
+use App\Services\Logging\ActionLogService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
@@ -16,17 +17,15 @@ use Illuminate\Support\Facades\Auth;
  */
 class IdeaController extends Controller
 {
-    public function __construct()
-    {
-
-    }
+    public function __construct(
+        private readonly ActionLogService $actionLog
+    ) {}
 
     /**
      * Display all ideas.
      */
     public function index()
     {
-        // Loads ideas with their authors (simple pagination)
         $ideas = Idea::with('user')
             ->latest()
             ->paginate(10);
@@ -57,6 +56,14 @@ class IdeaController extends Controller
             'description' => $request->input('description'), // XSS not escaped
             'application' => $request->input('application'),
         ]);
+
+        $this->actionLog->log(
+            userId: Auth::id(),
+            action: 'idea_created',
+            ideaId: $idea->id,
+            dataAfter: json_encode($idea->only(['title', 'description', 'application'])),
+            request: $request,
+        );
 
         return redirect()
             ->route('ideas.show', $idea)
@@ -90,11 +97,23 @@ class IdeaController extends Controller
     public function update(Request $request, Idea $idea)
     {
         $this->authorize('update', $idea);
+
+        $before = $idea->only(['title', 'description', 'application']);
+
         $idea->update([
             'title'       => $request->input('title'),
             'description' => $request->input('description'),
             'application' => $request->input('application'),
         ]);
+
+        $this->actionLog->log(
+            userId: Auth::id(),
+            action: 'idea_updated',
+            ideaId: $idea->id,
+            dataBefore: json_encode($before),
+            dataAfter: json_encode($idea->only(['title', 'description', 'application'])),
+            request: $request,
+        );
 
         return redirect()
             ->route('ideas.show', $idea)
@@ -110,7 +129,19 @@ class IdeaController extends Controller
     public function destroy(Idea $idea)
     {
         $this->authorize('delete', $idea);
+
+        $before = $idea->only(['title', 'description', 'application']);
+        $ideaId = $idea->id;
+
         $idea->delete();
+
+        $this->actionLog->log(
+            userId: Auth::id(),
+            action: 'idea_deleted',
+            ideaId: $ideaId,
+            dataBefore: json_encode($before),
+            request: request(),
+        );
 
         return redirect()
             ->route('ideas.index')
