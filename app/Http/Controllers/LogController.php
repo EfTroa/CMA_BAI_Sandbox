@@ -8,10 +8,17 @@ class LogController extends Controller
 {
     public function index()
     {
-        $logFile = storage_path('logs/laravel.log');
+        $filter = request('action');
+        $date   = request('date');
 
-        $content = File::exists($logFile) ? File::get($logFile) : 'Aucun log disponible.';
+        $actions = \App\Models\ActionLog::distinct()->pluck('action')->sort()->values();
 
-        return view('logs.index', compact('content'));
+        $logs = \App\Models\ActionLog::with('user')
+            ->when($filter, fn($query) => $query->where('action', $filter))
+            ->when($date,   fn($query) => $query->whereDate('created_at', $date))
+            ->latest()
+            ->get();
+
+        return view('logs.index', compact('logs', 'actions', 'filter', 'date'));
     }
 }

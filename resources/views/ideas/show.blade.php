@@ -115,7 +115,7 @@
                                 @method('PUT')
                                 <textarea name="description"
                                           rows="2"
-                                          class="w-full border rounded p-2 text-sm">{{ e($comment->description) }}</textarea>
+                                          class="w-full border rounded p-2 text-sm">{{ $comment->description }}</textarea>
                                 <button class="mt-1 px-3 py-1 bg-blue-600 text-white text-sm rounded">
                                     Save
                                 </button>
